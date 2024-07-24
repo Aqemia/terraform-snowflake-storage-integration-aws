@@ -19,12 +19,15 @@ resource "snowflake_storage_integration" "this" {
   storage_aws_role_arn = "arn:${var.arn_format}:iam::${local.account_id}:role/${local.s3_reader_role_name}"
 }
 
-resource "snowflake_integration_grant" "this" {
+resource "snowflake_grant_privilege_to_account_role" "this" {
   provider         = snowflake.storage_integration_role
-  integration_name = snowflake_storage_integration.this.name
+  on_account_object {
+    object_type = "INTEGRATION"
+    object_name = snowflake_storage_integration.this.name
+  }
 
-  privilege = "USAGE"
-  roles     = var.snowflake_integration_user_roles
+  privileges = ["USAGE"]
+  account_role_name = var.snowflake_integration_user_roles
 
   with_grant_option = false
 }
