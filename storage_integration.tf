@@ -21,7 +21,7 @@ resource "snowflake_storage_integration" "this" {
 
 resource "snowflake_grant_privileges_to_account_role" "this" {
   provider         = snowflake.storage_integration_role
-  for_each         = var.snowflake_integration_user_roles
+  for_each         = toset(var.snowflake_integration_user_roles)
 
   on_account_object {
     object_type = "INTEGRATION"
